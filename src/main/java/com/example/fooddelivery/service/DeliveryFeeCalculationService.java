@@ -49,30 +49,38 @@ public class DeliveryFeeCalculationService {
     }
 
     private double calculateRegionalBaseFee(String city, String vehicleType) {
-        switch (city) {
-            case "Tallinn":
-                return switch (vehicleType) {
-                    case "Car" -> 4.0;
-                    case "Scooter" -> 3.5;
-                    case "Bike" -> 3.0;
-                    default -> throw new IllegalArgumentException("Invalid vehicle type: " + vehicleType);
-                };
-            case "Tartu":
-                return switch (vehicleType) {
-                    case "Car" -> 3.5;
-                    case "Scooter" -> 3.0;
-                    case "Bike" -> 2.5;
-                    default -> throw new IllegalArgumentException("Invalid vehicle type: " + vehicleType);
-                };
-            case "Pärnu":
-                return switch (vehicleType) {
-                    case "Car" -> 3.0;
-                    case "Scooter" -> 2.5;
-                    case "Bike" -> 2.0;
-                    default -> throw new IllegalArgumentException("Invalid vehicle type: " + vehicleType);
-                };
-            default:
-                throw new IllegalArgumentException("Invalid city: " + city);
+        if ("Tallinn".equals(city)) {
+            if ("Car".equals(vehicleType)) {
+                return 4.0;
+            } else if ("Scooter".equals(vehicleType)) {
+                return 3.5;
+            } else if ("Bike".equals(vehicleType)) {
+                return 3.0;
+            } else {
+                throw new IllegalArgumentException("Invalid vehicle type: " + vehicleType);
+            }
+        } else if ("Tartu".equals(city)) {
+            if ("Car".equals(vehicleType)) {
+                return 3.5;
+            } else if ("Scooter".equals(vehicleType)) {
+                return 3.0;
+            } else if ("Bike".equals(vehicleType)) {
+                return 2.5;
+            } else {
+                throw new IllegalArgumentException("Invalid vehicle type: " + vehicleType);
+            }
+        } else if ("Pärnu".equals(city)) {
+            if ("Car".equals(vehicleType)) {
+                return 3.0;
+            } else if ("Scooter".equals(vehicleType)) {
+                return 2.5;
+            } else if ("Bike".equals(vehicleType)) {
+                return 2.0;
+            } else {
+                throw new IllegalArgumentException("Invalid vehicle type: " + vehicleType);
+            }
+        } else {
+            throw new IllegalArgumentException("Invalid city: " + city);
         }
     }
 

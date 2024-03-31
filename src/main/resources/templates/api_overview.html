@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!-- Meta tags -->
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1">
+    
+    <!-- Page title -->
+    <title>Food Delivery API</title>
+
+</head>
+<body>
+    <h2>Food delivery API</h2>
+
+    <div th:if="${error}">
+        <storng th:text="${error}" style="background-color: salmon;"></strong>
+    </div> 
+
+    <p>Most important endpoints:</p>
+
+    <hr>
+    <p><span style="background-color: lightgreen;">GET</span> /api/delivery-fee/{cityName}/{vehicleType} </p>
+    <ul>
+        <li>Description: Get current delivery fee based on city and courier vehicle. </li>
+        <li>Supported <i>cityName</i> values: Tartu, Tallinn, Pärnu</li>
+        <li>Supported <i>vehicleType</i> values: Car, Bike, Scooter</li>
+    </ul>
+
+    <hr>
+    
+    <p><span style="background-color: lightgreen;">GET</span> /api/cities</p>
+    <ul>
+        <li>Description: Get cities with the nearest weather station value.</li>
+    </ul>
+    <p><span style="background-color: lightgreen;">POST</span> /api/cities/{cityName}/{weatherStationName}</p>
+    <ul>
+        <li>Description: Create a new city. Must be linked to a nearest weather station. Weather station name must be identical to a station name in weather API (<a>https://www.ilmateenistus.ee/ilma_andmed/xml/observations.php</a>)</li>
+    </ul>
+
+    <hr>
+
+     
+    
+
+</body>

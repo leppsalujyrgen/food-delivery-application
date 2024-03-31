@@ -6,23 +6,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class DeliveryFeeController {
 
-    private final DeliveryFeeCalculationService deliveryFeeCalculationService;
-
     @Autowired
-    public DeliveryFeeController(DeliveryFeeCalculationService deliveryFeeCalculationService) {
-        this.deliveryFeeCalculationService = deliveryFeeCalculationService;
-    }
+    private DeliveryFeeCalculationService deliveryFeeCalculationService;
 
-    @GetMapping("/api/delivery-fee")
+    @GetMapping("/api/delivery-fee/{cityName}/{vehicleType}")
     public ResponseEntity<DeliveryFeeResponse> calculateDeliveryFee(
-            @RequestParam("city") String city,
-            @RequestParam("vehicleType") String vehicleType
+            @PathVariable("cityName") String city,
+            @PathVariable("vehicleType") String vehicleType
     ) {
         try {
             double deliveryFee = deliveryFeeCalculationService.calculateDeliveryFee(city, vehicleType);

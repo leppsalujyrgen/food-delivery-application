@@ -34,61 +34,70 @@ public class WeatherDataRetriever {
 	
 	public static List<WeatherData> getWeatherStationData(Document xmlWeatherData, Collection<String> weatherStationNames) throws SAXException, IOException, ParserConfigurationException {
 		Element observations = (Element) xmlWeatherData.getElementsByTagName("observations").item(0);
-	    String timestamp = observations.getAttribute("timestamp");
-	    NodeList stations = xmlWeatherData.getElementsByTagName("station");
-	    
-	    List<WeatherData> weatherStationDataList = new ArrayList<>();
-	    for (int i = 0; i < stations.getLength(); i++) {
-	    	Element stationElement = (Element) stations.item(i);
-            WeatherData stationWeatherData = new WeatherData();
-            
-            NodeList stationChildNodes = stationElement.getChildNodes();
-            for (int j = 0; j < stationChildNodes.getLength(); j++) {
-                Node stationEntry = stationChildNodes.item(j);
-                String entryName = stationEntry.getNodeName();
-                String entryValue = stationEntry.getTextContent();
-                if(entryValue==null) {
-            		entryValue="";
-            	}
-                
-                if (entryName.equalsIgnoreCase("name")) {
-                	stationWeatherData.setStationName(entryValue);
-            	}
-                else if (entryName.equalsIgnoreCase("wmocode")) {
-                	stationWeatherData.setWmoCode(entryValue);
-                }
-                else if (entryName.equalsIgnoreCase("airtemperature")) {
-                	try {
-                		stationWeatherData.setAirTemperature(Double.valueOf(entryValue));
-	                } catch (Exception e) {
-	            		stationWeatherData.setWindSpeed(0.0);
-	            	}
-                }
-                else if (entryName.equalsIgnoreCase("windspeed")) {
-                	try {
-                		stationWeatherData.setWindSpeed(Double.valueOf(entryValue));
-                	} catch (Exception e) {
-                		stationWeatherData.setWindSpeed(0.0);
-                	}
-    			}
-                else if (entryName.equalsIgnoreCase("phenomenon")) {
-            		stationWeatherData.setWeatherPhenomenon(entryValue);
-                }
-            }
-            stationWeatherData.setTimestamp(timestamp);
-
-            if (weatherStationNames.contains(stationWeatherData.getStationName())) {
-                weatherStationDataList.add(stationWeatherData);
-            }
-        }
-	    
-	    
-        return weatherStationDataList;
-    }
+		String timestamp = observations.getAttribute("timestamp");
+		NodeList stations = xmlWeatherData.getElementsByTagName("station");
+	
+		List<WeatherData> weatherStationDataList = new ArrayList<>();
+		for (int i = 0; i < stations.getLength(); i++) {
+			Node station = stations.item(i);
+			if (station.getNodeType() == Node.ELEMENT_NODE) {
+				Element stationElement = (Element) station;
+				WeatherData stationWeatherData = new WeatherData();
+				stationWeatherData.setTimestamp(timestamp);
+	
+				NodeList entryNodes = stationElement.getChildNodes();
+				for (int j = 0; j < entryNodes.getLength(); j++) {
+					Node entry = entryNodes.item(j);
+					if (entry.getNodeType() == Node.ELEMENT_NODE) {
+						String entryName = entry.getNodeName();
+						String entryValue = entry.getTextContent();
+	
+						// Handle null entryValue
+						if (entryValue == null) {
+							entryValue = "";
+						}
+	
+						// Set WeatherData properties based on entryName
+						switch (entryName.trim().toLowerCase()) {
+							case "name":
+								stationWeatherData.setStationName(entryValue);
+								break;
+							case "wmocode":
+								stationWeatherData.setWmoCode(entryValue);
+								break;
+							case "airtemperature":
+								try {
+									stationWeatherData.setAirTemperature(Double.valueOf(entryValue));
+								} catch (NumberFormatException e) {
+									stationWeatherData.setAirTemperature(0.0); // Default value if parsing fails
+								}
+								break;
+							case "windspeed":
+								try {
+									stationWeatherData.setWindSpeed(Double.valueOf(entryValue));
+								} catch (NumberFormatException e) {
+									stationWeatherData.setWindSpeed(0.0); // Default value if parsing fails
+								}
+								break;
+							case "phenomenon":
+								stationWeatherData.setWeatherPhenomenon(entryValue);
+								break;
+						}
+					}
+				}
+	
+				// Add WeatherData to the list if the station name matches
+				if (weatherStationNames.contains(stationWeatherData.getStationName())) {
+					weatherStationDataList.add(stationWeatherData);
+				}
+			}
+		}
+	
+		return weatherStationDataList;
+	}
 	
 	
 	public static Document requestWeatherData() throws SAXException, IOException, ParserConfigurationException {
-		// Query the URL (dummy implementation, no actual processing of XML)
         RestTemplate restTemplate = new RestTemplate();
         String xmlData = restTemplate.getForObject(weatherDataUrl, String.class);
         
