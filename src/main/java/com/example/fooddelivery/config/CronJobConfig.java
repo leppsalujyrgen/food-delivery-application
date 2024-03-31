@@ -2,7 +2,7 @@ package com.example.fooddelivery.config;
 
 import com.example.fooddelivery.entity.WeatherData;
 import com.example.fooddelivery.repository.WeatherDataRepository;
-import com.example.fooddelivery.util.WeatherDataRetriever;
+import com.example.fooddelivery.util.WeatherAPI;
 
 import jakarta.annotation.PostConstruct;
 
@@ -51,7 +51,7 @@ public class CronJobConfig {
 	@Scheduled(cron = "0 15 * * * *") // Runs every hour at 15 minutes past the hour
 	public void importWeatherDataOnSchedule() {
 		try {
-			List<WeatherData> weatherDataList = WeatherDataRetriever.getDefaultStationsData();
+			List<WeatherData> weatherDataList = WeatherAPI.getDefaultStationsData();
 			weatherDataRepository.saveAll(weatherDataList);
 		} catch (SAXException e) {
 			// TODO Auto-generated catch block

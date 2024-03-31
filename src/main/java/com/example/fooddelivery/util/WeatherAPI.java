@@ -21,7 +21,7 @@ import org.xml.sax.SAXException;
 
 import com.example.fooddelivery.entity.WeatherData;
 
-public class WeatherDataRetriever {
+public class WeatherAPI {
 
 	public static String weatherDataUrl = "https://www.ilmateenistus.ee/ilma_andmed/xml/observations.php";
 	public static Collection<String> defaultStationNames = Stream.of("Tallinn-Harku", "Tartu-Tõravere", "Pärnu")

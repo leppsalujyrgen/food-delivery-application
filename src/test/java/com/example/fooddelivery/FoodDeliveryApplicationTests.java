@@ -19,7 +19,7 @@ import org.xml.sax.SAXException;
 
 import com.example.fooddelivery.entity.WeatherData;
 import com.example.fooddelivery.util.FeeCalculations;
-import com.example.fooddelivery.util.WeatherDataRetriever;
+import com.example.fooddelivery.util.WeatherAPI;
 
 @SpringBootTest
 class FoodDeliveryApplicationTests {
@@ -32,7 +32,7 @@ class FoodDeliveryApplicationTests {
 	@DisplayName("Test if weather data is requested successfully from external weather API.")
 	public void testMethod_requestWeatherData() {
 		try {
-			Document xmlData = WeatherDataRetriever.requestWeatherData();
+			Document xmlData = WeatherAPI.requestWeatherData();
 			assertTrue(xmlData.getChildNodes().getLength() > 0, "Expected weather request response to contain entries");
 			NodeList stations = xmlData.getElementsByTagName("station");
 			assertTrue(stations.getLength() > 10,
@@ -47,8 +47,8 @@ class FoodDeliveryApplicationTests {
 	public void testMethod_getDefaultStationsData() {
 		try {
 			// Call the method under test
-			Collection<String> stationNames = WeatherDataRetriever.defaultStationNames;
-			List<WeatherData> stationDataList = WeatherDataRetriever.getDefaultStationsData();
+			Collection<String> stationNames = WeatherAPI.defaultStationNames;
+			List<WeatherData> stationDataList = WeatherAPI.getDefaultStationsData();
 			assertEquals(stationNames.size(), stationDataList.size(),
 					"Expected " + stationNames.size() + " weather data entries");
 		} catch (SAXException e) {
@@ -66,7 +66,7 @@ class FoodDeliveryApplicationTests {
 		WeatherData weatherData = new WeatherData("Tartu-Tõravere", null, -2.1, 4.7, "Light snow shower", null);
 		double rbf = FeeCalculations.calculateRegionalBaseFee("Tartu", "Bike");
 		double extraFee = FeeCalculations.calculateExtraFee(weatherData, "Bike");
-		assertEquals(4.0, rbf+extraFee, 0.000001);
+		assertEquals(4.0, rbf + extraFee, 0.000001);
 	}
 
 }
