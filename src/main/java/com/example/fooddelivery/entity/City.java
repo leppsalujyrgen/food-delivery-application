@@ -13,17 +13,16 @@ public class City {
     private Long id;
 
     private String name;
-    
+
     private String weatherStationName;
-    
-    public City() {}
+
+    public City() {
+    }
 
     public City(String name, String weatherStationWmo) {
-		this.name = name;
-		this.weatherStationName = weatherStationWmo;
-	}
-
-	// Getters and setters
+        this.name = name;
+        this.weatherStationName = weatherStationWmo;
+    }
 
     public Long getId() {
         return id;
@@ -41,11 +40,11 @@ public class City {
         this.name = name;
     }
 
-	public String getWeatherStationName() {
-		return weatherStationName;
-	}
+    public String getWeatherStationName() {
+        return weatherStationName;
+    }
 
-	public void setWeatherStationName(String weatherStationName) {
-		this.weatherStationName = weatherStationName;
-	}
+    public void setWeatherStationName(String weatherStationName) {
+        this.weatherStationName = weatherStationName;
+    }
 }

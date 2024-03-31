@@ -21,12 +21,30 @@ import org.xml.sax.SAXException;
 
 import com.example.fooddelivery.entity.WeatherData;
 
+/**
+ * Utility class for handling requests to the weather API and reconstructing weather data.
+ */
 public class WeatherAPI {
 
+	/**
+     * URL of the weather data API.
+     */
 	public static String weatherDataUrl = "https://www.ilmateenistus.ee/ilma_andmed/xml/observations.php";
+
+	/**
+     * Default station names for retrieving weather data.
+     */
 	public static Collection<String> defaultStationNames = Stream.of("Tallinn-Harku", "Tartu-Tõravere", "Pärnu")
 			.collect(Collectors.toCollection(HashSet::new));
 
+	 /**
+     * Retrieves weather data for the default stations.
+     *
+     * @return A list of WeatherData objects containing the weather information for default stations.
+     * @throws SAXException                  If an error occurs during XML parsing.
+     * @throws IOException                   If an I/O error occurs while reading from the input stream.
+     * @throws ParserConfigurationException If a DocumentBuilder cannot be created.
+     */
 	public static List<WeatherData> getDefaultStationsData()
 			throws SAXException, IOException, ParserConfigurationException {
 		Document xmlWeatherData = requestWeatherData();
@@ -34,6 +52,16 @@ public class WeatherAPI {
 		return weatherStationDataList;
 	}
 
+	/**
+     * Retrieves weather data for the specified weather station names.
+     *
+     * @param xmlWeatherData       The XML document containing weather data.
+     * @param weatherStationNames  The collection of weather station names to retrieve data for.
+     * @return A list of WeatherData objects containing the weather information for the specified stations.
+     * @throws SAXException                  If an error occurs during XML parsing.
+     * @throws IOException                   If an I/O error occurs while reading from the input stream.
+     * @throws ParserConfigurationException If a DocumentBuilder cannot be created.
+     */
 	public static List<WeatherData> getWeatherStationData(Document xmlWeatherData,
 			Collection<String> weatherStationNames) throws SAXException, IOException, ParserConfigurationException {
 		Element observations = (Element) xmlWeatherData.getElementsByTagName("observations").item(0);
@@ -99,6 +127,14 @@ public class WeatherAPI {
 		return weatherStationDataList;
 	}
 
+	 /**
+     * Requests weather data from the weather API.
+     *
+     * @return The XML document containing weather data.
+     * @throws SAXException                  If an error occurs during XML parsing.
+     * @throws IOException                   If an I/O error occurs while reading from the input stream.
+     * @throws ParserConfigurationException If a DocumentBuilder cannot be created.
+     */
 	public static Document requestWeatherData() throws SAXException, IOException, ParserConfigurationException {
 		RestTemplate restTemplate = new RestTemplate();
 		String xmlData = restTemplate.getForObject(weatherDataUrl, String.class);

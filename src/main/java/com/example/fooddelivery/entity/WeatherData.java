@@ -21,8 +21,7 @@ public class WeatherData {
     
     public WeatherData() {}
 
-    public WeatherData(String stationName, String wmoCode, Double airTemperature, Double windSpeed,
-			String weatherPhenomenon, String timestamp) {
+    public WeatherData(String stationName, String wmoCode, Double airTemperature, Double windSpeed, String weatherPhenomenon, String timestamp) {
 		this.stationName = stationName;
 		this.wmoCode = wmoCode;
 		this.airTemperature = airTemperature;
@@ -30,8 +29,6 @@ public class WeatherData {
 		this.weatherPhenomenon = weatherPhenomenon;
 		this.timestamp = timestamp;
 	}
-
-	// Getters and setters
 
     public Long getId() {
         return id;

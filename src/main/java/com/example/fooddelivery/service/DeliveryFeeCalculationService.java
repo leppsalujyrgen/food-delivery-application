@@ -10,6 +10,9 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+/**
+ * Service class for calculating the delivery fee based on the city and vehicle type.
+ */
 @Service
 public class DeliveryFeeCalculationService {
 
@@ -23,8 +26,15 @@ public class DeliveryFeeCalculationService {
         this.cityService = cityService;
     }
 
+    /**
+     * Calculates the delivery fee based on the specified city and vehicle type.
+     * 
+     * @param cityName The name of the city.
+     * @param vehicleType The type of vehicle used for delivery.
+     * @return The calculated delivery fee.
+     * @throws IllegalArgumentException If the city or weather data is not found.
+     */
     public double calculateDeliveryFee(String cityName, String vehicleType) {
-    	// Get the city from database
     	Optional<City> requestedCity = cityService.getCityByName(cityName);
         if (requestedCity.isEmpty()) {
             throw new IllegalArgumentException("Unknown city: " + cityName);
@@ -32,20 +42,16 @@ public class DeliveryFeeCalculationService {
         City city = requestedCity.get();
     	
     	
-        // Get the latest weather data for the specified city
-        Optional<WeatherData> requestedWeatherData = weatherDataRepository.findTopByStationNameOrderByTimestamp(city.getWeatherStationName());
+        Optional<WeatherData> requestedWeatherData = weatherDataRepository.findTopByStationNameOrderByTimestampDesc(city.getWeatherStationName());
         if (requestedWeatherData.isEmpty()) {
             throw new IllegalArgumentException("Weather data not found for city: " + city.getName());
         }
         WeatherData weatherData = requestedWeatherData.get();
 
-        // Calculate regional base fee
         double regionalBaseFee = FeeCalculations.calculateRegionalBaseFee(city.getName(), vehicleType);
 
-        // Calculate extra fees based on weather conditions
         double extraFee = FeeCalculations.calculateExtraFee(weatherData, vehicleType);
 
-        // Total delivery fee
         return regionalBaseFee + extraFee;
     }
 

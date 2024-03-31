@@ -2,8 +2,19 @@ package com.example.fooddelivery.util;
 
 import com.example.fooddelivery.entity.WeatherData;
 
+/**
+ * Utility class for calculating delivery fees based on city and weather conditions.
+ */
 public class FeeCalculations {
 
+     /**
+     * Calculates the regional base fee for a specific city and vehicle type.
+     *
+     * @param city The name of the city.
+     * @param vehicleType The type of vehicle (Car, Scooter, or Bike).
+     * @return The calculated regional base fee.
+     * @throws IllegalArgumentException If the city or vehicle type is invalid.
+     */
     public static double calculateRegionalBaseFee(String city, String vehicleType) {
         if ("Tallinn".equals(city)) {
             if ("Car".equals(vehicleType)) {
@@ -40,6 +51,14 @@ public class FeeCalculations {
         }
     }
 
+    /**
+     * Calculates the extra fee based on weather conditions for a specific vehicle type.
+     *
+     * @param weatherData The weather data for the city.
+     * @param vehicleType The type of vehicle (Car or Scooter or Bike).
+     * @return The calculated extra fee.
+     * @throws IllegalArgumentException If the selected vehicle type is forbidden due to weather conditions.
+     */
     public static double calculateExtraFee(WeatherData weatherData, String vehicleType) {
         double extraFee = 0.0;
         // Extra fee based on air temperature
