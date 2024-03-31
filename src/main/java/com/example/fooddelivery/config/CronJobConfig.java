@@ -21,18 +21,37 @@ import org.xml.sax.SAXException;
 @EnableScheduling
 public class CronJobConfig {
 
-    private final WeatherDataRepository weatherDataRepository;
+	private final WeatherDataRepository weatherDataRepository;
 
-    @Autowired
-    public CronJobConfig(WeatherDataRepository weatherDataRepository) {
-        this.weatherDataRepository = weatherDataRepository;
-    }
-    
-	/* 
-    @PostConstruct // Runs on application startup
-    public void importWeatherDataOnStartup() {
-        try {			
-			List<WeatherData> weatherDataList = WeatherDataRetriever.getWeatherStationData();
+	@Autowired
+	public CronJobConfig(WeatherDataRepository weatherDataRepository) {
+		this.weatherDataRepository = weatherDataRepository;
+	}
+
+	/*
+	 * @PostConstruct // Runs on application startup
+	 * public void importWeatherDataOnStartup() {
+	 * try {
+	 * List<WeatherData> weatherDataList =
+	 * WeatherDataRetriever.getWeatherStationData();
+	 * weatherDataRepository.saveAll(weatherDataList);
+	 * } catch (SAXException e) {
+	 * // TODO Auto-generated catch block
+	 * e.printStackTrace();
+	 * } catch (IOException e) {
+	 * // TODO Auto-generated catch block
+	 * e.printStackTrace();
+	 * } catch (ParserConfigurationException e) {
+	 * // TODO Auto-generated catch block
+	 * e.printStackTrace();
+	 * }
+	 * }
+	 */
+
+	@Scheduled(cron = "0 15 * * * *") // Runs every hour at 15 minutes past the hour
+	public void importWeatherDataOnSchedule() {
+		try {
+			List<WeatherData> weatherDataList = WeatherDataRetriever.getDefaultStationsData();
 			weatherDataRepository.saveAll(weatherDataList);
 		} catch (SAXException e) {
 			// TODO Auto-generated catch block
@@ -44,23 +63,5 @@ public class CronJobConfig {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-    }
-	*/
-
-    @Scheduled(cron = "0 15 * * * *") // Runs every hour at 15 minutes past the hour
-    public void importWeatherDataOnSchedule() {
-        try {			
-			List<WeatherData> weatherDataList = WeatherDataRetriever.getWeatherStationData();
-			weatherDataRepository.saveAll(weatherDataList);
-		} catch (SAXException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ParserConfigurationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-    }
+	}
 }

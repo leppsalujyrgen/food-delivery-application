@@ -22,21 +22,24 @@ import org.xml.sax.SAXException;
 import com.example.fooddelivery.entity.WeatherData;
 
 public class WeatherDataRetriever {
-	
+
 	public static String weatherDataUrl = "https://www.ilmateenistus.ee/ilma_andmed/xml/observations.php";
-	public static Collection<String> weatherStationNames = Stream.of("Tallinn-Harku", "Tartu-Tõravere", "Pärnu").collect(Collectors.toCollection(HashSet::new));
-	
-	public static List<WeatherData> getWeatherStationData() throws SAXException, IOException, ParserConfigurationException {
+	public static Collection<String> defaultStationNames = Stream.of("Tallinn-Harku", "Tartu-Tõravere", "Pärnu")
+			.collect(Collectors.toCollection(HashSet::new));
+
+	public static List<WeatherData> getDefaultStationsData()
+			throws SAXException, IOException, ParserConfigurationException {
 		Document xmlWeatherData = requestWeatherData();
-		List<WeatherData> weatherStationDataList = getWeatherStationData(xmlWeatherData, weatherStationNames);
-        return weatherStationDataList;
-    }
-	
-	public static List<WeatherData> getWeatherStationData(Document xmlWeatherData, Collection<String> weatherStationNames) throws SAXException, IOException, ParserConfigurationException {
+		List<WeatherData> weatherStationDataList = getWeatherStationData(xmlWeatherData, defaultStationNames);
+		return weatherStationDataList;
+	}
+
+	public static List<WeatherData> getWeatherStationData(Document xmlWeatherData,
+			Collection<String> weatherStationNames) throws SAXException, IOException, ParserConfigurationException {
 		Element observations = (Element) xmlWeatherData.getElementsByTagName("observations").item(0);
 		String timestamp = observations.getAttribute("timestamp");
 		NodeList stations = xmlWeatherData.getElementsByTagName("station");
-	
+
 		List<WeatherData> weatherStationDataList = new ArrayList<>();
 		for (int i = 0; i < stations.getLength(); i++) {
 			Node station = stations.item(i);
@@ -44,19 +47,19 @@ public class WeatherDataRetriever {
 				Element stationElement = (Element) station;
 				WeatherData stationWeatherData = new WeatherData();
 				stationWeatherData.setTimestamp(timestamp);
-	
+
 				NodeList entryNodes = stationElement.getChildNodes();
 				for (int j = 0; j < entryNodes.getLength(); j++) {
 					Node entry = entryNodes.item(j);
 					if (entry.getNodeType() == Node.ELEMENT_NODE) {
 						String entryName = entry.getNodeName();
 						String entryValue = entry.getTextContent();
-	
+
 						// Handle null entryValue
 						if (entryValue == null) {
 							entryValue = "";
 						}
-	
+
 						// Set WeatherData properties based on entryName
 						switch (entryName.trim().toLowerCase()) {
 							case "name":
@@ -85,28 +88,25 @@ public class WeatherDataRetriever {
 						}
 					}
 				}
-	
+
 				// Add WeatherData to the list if the station name matches
 				if (weatherStationNames.contains(stationWeatherData.getStationName())) {
 					weatherStationDataList.add(stationWeatherData);
 				}
 			}
 		}
-	
+
 		return weatherStationDataList;
 	}
-	
-	
+
 	public static Document requestWeatherData() throws SAXException, IOException, ParserConfigurationException {
-        RestTemplate restTemplate = new RestTemplate();
-        String xmlData = restTemplate.getForObject(weatherDataUrl, String.class);
-        
-        // Parse the XML data string to a Document object
-		Document xmlDocument = DocumentBuilderFactory.
-				newInstance().
-				newDocumentBuilder().
-				parse(new ByteArrayInputStream(xmlData.getBytes()));
+		RestTemplate restTemplate = new RestTemplate();
+		String xmlData = restTemplate.getForObject(weatherDataUrl, String.class);
+
+		// Parse the XML data string to a Document object
+		Document xmlDocument = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+				.parse(new ByteArrayInputStream(xmlData.getBytes()));
 		return xmlDocument;
 	}
-	
+
 }
