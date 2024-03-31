@@ -28,7 +28,8 @@ public class CronJobConfig {
         this.weatherDataRepository = weatherDataRepository;
     }
     
-    @PostConstruct // Runs on startup
+	/* 
+    @PostConstruct // Runs on application startup
     public void importWeatherDataOnStartup() {
         try {			
 			List<WeatherData> weatherDataList = WeatherDataRetriever.getWeatherStationData();
@@ -44,6 +45,7 @@ public class CronJobConfig {
 			e.printStackTrace();
 		}
     }
+	*/
 
     @Scheduled(cron = "0 15 * * * *") // Runs every hour at 15 minutes past the hour
     public void importWeatherDataOnSchedule() {
