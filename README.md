@@ -35,6 +35,6 @@ To run the application, use the following command:
 This will start the Spring Boot application.
 
 ### Accessing the Application
-Once the application is running, you can access it at http://localhost:8080.
+Once the application is running, you can access it at http://localhost:8080/api.
 
 
